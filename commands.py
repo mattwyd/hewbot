@@ -16,7 +16,7 @@ import matplotlib.pyplot as plt
 from fuzzywuzzy import fuzz
 from collections import Counter
 
-last_write = 'last black history month'
+last_write = ''
 keyList = {}
 command_list = {}
 image_directory = 'images'
@@ -37,8 +37,8 @@ def register(command_str):
 
 @register('help')
 async def help_command(message, args, client):
-    hidden_commands = ['help', 'yo', 'echo', 'write', 'tts']
-    help_text = 'yo this is what on the menu tonight:\n\n'
+    hidden_commands = ['help', 'echo', 'write', 'tts']
+    help_text = 'this is whats on the menu tonight:\n\n'
     if not args:
         for command in command_list:
             if command not in hidden_commands:
@@ -47,10 +47,6 @@ async def help_command(message, args, client):
     else:
         await message.channel.send(f'so you want help with the {args[0]} command?...\n\n{descriptions.commands[args[0]]}')
 
-
-@register('yo')
-async def yo_command(message, args, client):
-    await message.channel.send(f'yo {message.author}!')
 
 @register('today')
 async def today_command(message, args, client):
@@ -76,34 +72,37 @@ async def roll_command(message, args, client):
 @register('add')
 async def add_command(message, args, client):
     # check if there is an attachment and if the user gave some keyword to refer to the image
-    if message.attachments and args:
-        # get url
-        attachment = message.attachments[0]
-        url = attachment.url
-        if url.endswith('jpg'):
-            # send a get request to the url and get the response
-            response = requests.get(url)
-            if response.status_code == 200:
-                file_name = f'{args[0]}.jpg'
-                with open(os.path.join(image_directory, file_name), 'wb') as f:
-                    f.write(response.content)
-                try:
-                    if args[1] == '-noresize':
-                        await message.channel.send('saved on the giga chad server systems. congrats!')  
-                except IndexError:
-                    with Image.open(os.path.join(image_directory, file_name)) as original_image:
-                        # resize the image
-                        resized_image = original_image.resize((128, 128))
-                        # save the resized image to a new file
-                        resized_image.save(os.path.join(image_directory, file_name))
-                        await message.channel.send('your jpg has been resized and saved on the giga chad server systems. congrats!')  
-                
-            else:
-                print(f'error {response.status_code}')
-        else:
-            await message.channel.send('this is not a jpg, my friend.')
+   if message.attachments and args:
+    # get url
+    attachment = message.attachments[0]
+    url = attachment.url
+
+    if not url.endswith('jpg'):
+        await message.channel.send('this is not a jpg.')
     else:
-        await message.channel.send('either you did not attach anything or you did not specify a keyword, my friend.')
+        # send a get request to the url and get the response
+        response = requests.get(url)
+
+        if response.status_code != 200:
+            print(f'error {response.status_code}')
+        else:
+            file_name = f'{args[0]}.jpg'
+            with open(os.path.join(image_directory, file_name), 'wb') as f:
+                f.write(response.content)
+
+            try:
+                if args[1] == '-noresize':
+                    await message.channel.send('saved to the server systems. congrats!')
+            except IndexError:
+                with Image.open(os.path.join(image_directory, file_name)) as original_image:
+                    # resize the image
+                    resized_image = original_image.resize((128, 128))
+                    # save the resized image to a new file
+                    resized_image.save(os.path.join(image_directory, file_name))
+                    await message.channel.send('your jpg has been resized and saved on the server systems. congrats!')
+            else:
+                await message.channel.send('either you did not attach anything or you did not specify a keyword.')
+
 
 @register('gimme')
 async def gimme_command(message, args, client):
@@ -120,7 +119,7 @@ async def reply_command(message, args, client):
     
     
     if len(text.split('-')) < 3:
-        await message.channel.send(f'bro look at .help reply')
+        await message.channel.send(f'look at .help reply')
         return
    
     text = text.split("-")
@@ -134,7 +133,7 @@ async def reply_command(message, args, client):
 
 @register('rmreply')
 async def rmreply_command(message, args, client):
-    #PROGRMA to register a command in the dictionry???? yaaaa
+
     bruv = ' '
     try:
         del keyList[bruv.join(args)]  
@@ -153,7 +152,7 @@ async def write_command(message, args, client):
     channels = server.text_channels
     # Print the names of all channels in the server
 
-    await message.channel.send(f'gimme a sec bruv im eating tf')
+    await message.channel.send(f'this might take a second')
     messages = []
     for channel in channels:
         print(channel.name)
@@ -166,7 +165,7 @@ async def write_command(message, args, client):
                 })
     print("Done fetching messages.")
 
-    # Sort the dictionary based on a specific key (in this example, the key is 'value')
+    
     messages = sorted(messages, key=lambda x: x['created_at'])
 
     print("Done sorting messages.")
@@ -232,16 +231,13 @@ async def mc_command(message, args, client):
                 await message.channel.send("The server has the following players online: {0}".format(", ".join(players)))
             else:
                 await message.channel.send("The server has the no players online and replied in {latency} ms".format(", ".join(players)))
-                
-            
+
         else:
             await message.channel.send("No players found on the server.")
     except Exception as e:
-        await message.channel.send(f"pretty sure nobody in this hoe")
+        await message.channel.send(f"No players found on the server")
     guess = random.randint(0,100)
     print(guess)
-    if guess < 5:
-        await message.channel.send(f"Server is suspected to be part of an online terrorist organization. Please report any suspicious activity to Mojang staff.")
     if guess > 95 :
         await message.channel.send(f"Server has various reports of admin abuse and admin hacking. Proceed with caution.")
 
@@ -289,27 +285,5 @@ async def word_command(message, args, client):
         await message.channel.send(file=discord.File('word_count_over_time.jpg'))
 
         os.remove("word_count_over_time.jpg")
-    elif len(args) == 1:
-        messages = []
-
-        try:
-            with open(os.path.join(storage_directory, 'backup.json'), 'r') as file: 
-                library = json.load(file)
-        except json.decoder.JSONDecodeError as e:
-            print(f'no replies stored, hopefully this is your first time set-up')
-
-        counts = {}
-        for data in library:
-            if contains_word_with_typos(data['content'], 'nigga') or contains_word_with_typos(data['content'], 'nigger'):
-                if 'bigger' not in data['content']:
-                    print(f"{data['author_name']}: {data['content']}")
-                    author_name = data['author_name']
-                    if author_name in counts:
-                        counts[author_name] += 1
-                    else:
-                        counts[author_name] = 1
-        await message.channel.send('''THE NWORD LEADERBOARD''')
-        for author_name, count in counts.items():
-            await message.channel.send(f"{author_name}: {count}")
     else:
         await message.channel.send(f"usage is .word username word ")

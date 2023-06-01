@@ -18,11 +18,11 @@ def contains_word_with_typos(string, word):
             return True
     return False
 
-print(contains_word_with_typos('nigas', 'nigga'))
+print(contains_word_with_typos('', ''))
 
 counts = {}
 for data in keyList:
-    if contains_word_with_typos(data['content'], 'nigga') or contains_word_with_typos(data['content'], 'nigger'):
+    if contains_word_with_typos(data['content'], 'apple') or contains_word_with_typos(data['content'], 'apples'):
         print(data['content'])
         author_name = data['author_name']
         if author_name in counts:

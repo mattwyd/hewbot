@@ -4,10 +4,13 @@ import commands  # Import the commands module that contains custom command funct
 import json
 import datetime
 import os
+from config import TOKEN
+#token =  os.getenv('DISCORD_TOKEN')
 
 # Set up the Discord client and enable intents
-intents = discord.Intents.default()
+intents = discord.Intents.all()
 client = discord.Client(intents=intents)
+testing = 0
 # Define the on_ready event handler
 @client.event
 async def on_ready():
@@ -21,11 +24,11 @@ async def on_ready():
     daily_loop.start()  # Start the daily loop task
 
 # Define the daily_loop task that runs every 24 hours
-@tasks.loop(hours=16)
+@tasks.loop(hours=24)
 async def daily_loop():
     # Update the message of the day
-    await motd_update()
-    
+    if testing != 1:
+        await motd_update()
     #await commands.write_command()
 # Define the motd_update function that updates the Discord bot's presence with the message of the day
 async def motd_update():
@@ -36,19 +39,17 @@ async def motd_update():
     # Update the Discord bot's presence with the selected joke
     await client.change_presence(activity=discord.Streaming(name=selected_item, url='https://www.youtube.com/watch?v=MRW0i5rxRvU&t=188s&ab_channel=stevenokpysh'))
     channel = discord.utils.get(client.get_all_channels(), name='dabbot-spam')
-    await channel.send(selected_item)
+    #await channel.send(selected_item)
     print(f'it is day number {day_of_year} of the year')  # Print a message indicating the day of the year
     print(f'motd : {selected_item}')  # Print a message indicating the updated message of the day
 
 # Define the on_message event handler
 @client.event
 async def on_message(message):
-    
     # Ignore empty messages and messages sent by the bot itself
     if not message.content or message.author == client.user:
         return
     print(f'{message.channel} {message.author}: {message.content}')  # Print the author and content of the received message
-
     content = message.content.replace(',', '')  # Remove commas from the message content
 
     if content in commands.keyList:
@@ -83,4 +84,4 @@ async def on_message(message):
     else:
         return
 
-client.run('NTY2NjQyNTQ3NjYxOTk2MDcz.GE4So_.aFb0eMoHO9rEyKCYkz5heuc5PhHn5E-SSWVmFg')
+client.run(TOKEN)
