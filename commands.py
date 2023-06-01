@@ -15,6 +15,7 @@ from mcstatus import JavaServer
 import matplotlib.pyplot as plt
 from fuzzywuzzy import fuzz
 from collections import Counter
+from config import IP
 
 last_write = ''
 keyList = {}
@@ -22,7 +23,7 @@ command_list = {}
 image_directory = 'images'
 storage_directory = 'storage'
 
-mc_ip = '20.104.224.62:25565' #update this to be changeable in func
+mc_ip = IP #update this to be changeable in func
 server = JavaServer.lookup(mc_ip)
 api_endpoint = f"https://api.mcsrvstat.us/2/{mc_ip}"
 

@@ -3,3 +3,4 @@ images/
 word_frequency_plot.jpg
 word_occurences.png
 storage/
+config.py

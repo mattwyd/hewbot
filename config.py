@@ -1,1 +1,2 @@
 TOKEN = 'NTY2NjQyNTQ3NjYxOTk2MDcz.G7HSfD.Rois83FiZexVefsbjG3nKOoautrxUhckfU_0n0'
+IP = '20.104.224.62:25565'
