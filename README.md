@@ -8,3 +8,4 @@ Hewbot is a Discord bot written in Python that provides unlimited custom comamnd
 
    ```shell
    git clone https://github.com/your-username/hewbot.git
+   set up a config.py file with youre token inside
